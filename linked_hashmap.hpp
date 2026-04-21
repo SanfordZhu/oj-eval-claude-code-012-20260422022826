@@ -235,9 +235,8 @@ public:
 		 * for the support of it->first.
 		 * See <http://kelvinh.github.io/blog/2013/11/20/overloading-of-member-access-operator-dash-greater-than-symbol-in-cpp/> for help.
 		 */
-		value_type* operator->() const noexcept {
-			// Should not be called on end() iterator
-			// noexcept means we can't throw here
+		value_type* operator->() const {
+			if (!current) throw invalid_iterator();
 			return &(current->data);
 		}
 	};
@@ -319,7 +318,8 @@ public:
 			return current != rhs.current;
 		}
 
-		const value_type* operator->() const noexcept {
+		const value_type* operator->() const {
+			if (!current) throw invalid_iterator();
 			return &(current->data);
 		}
 	};
