@@ -95,11 +95,25 @@ private:
 		capacity = table_size * load_factor;
 	}
 
-	Node* find_node(const Key& key) const {
+	Node* find_node(const Key& key) {
 		size_t hash_val = hasher(key);
 		size_t index = get_bucket_index(hash_val);
 
 		Node* current = table[index].head;
+		while (current) {
+			if (current->hash_val == hash_val && key_equal(current->data.first, key)) {
+				return current;
+			}
+			current = current->next_hash;
+		}
+		return nullptr;
+	}
+
+	const Node* find_node(const Key& key) const {
+		size_t hash_val = hasher(key);
+		size_t index = get_bucket_index(hash_val);
+
+		const Node* current = table[index].head;
 		while (current) {
 			if (current->hash_val == hash_val && key_equal(current->data.first, key)) {
 				return current;
@@ -178,6 +192,7 @@ public:
 				// --end() should go to last element
 				current = container->tail_order;
 			}
+			// If container is empty, current stays nullptr
 			return temp;
 		}
 		/**
@@ -190,6 +205,7 @@ public:
 				// --end() should go to last element
 				current = container->tail_order;
 			}
+			// If container is empty, current stays nullptr
 			return *this;
 		}
 		/**
@@ -219,6 +235,7 @@ public:
 		 * See <http://kelvinh.github.io/blog/2013/11/20/overloading-of-member-access-operator-dash-greater-than-symbol-in-cpp/> for help.
 		 */
 		value_type* operator->() const noexcept {
+			// Should not be called on end() iterator
 			return &(current->data);
 		}
 	};
