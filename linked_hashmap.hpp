@@ -212,6 +212,7 @@ public:
 		 * a operator to check whether two iterators are same (pointing to the same memory).
 		 */
 		value_type & operator*() const {
+			if (!current) throw invalid_iterator();
 			return current->data;
 		}
 		bool operator==(const iterator &rhs) const {
@@ -236,6 +237,7 @@ public:
 		 */
 		value_type* operator->() const noexcept {
 			// Should not be called on end() iterator
+			// noexcept means we can't throw here
 			return &(current->data);
 		}
 	};
